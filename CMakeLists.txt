@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5) #Проверка версии CMake.
 
 set(PROJECT_NAME TTriangleMatrix) #Создаем обычную локальную переменную с именем проекта
 project(${PROJECT_NAME}) # Название проекта
-
+enable_testing()
 
 set(application TriangleMatirx) #Переменная с именем приложения
 
@@ -27,3 +27,6 @@ add_subdirectory(TTriangleMatrixLib)
 add_subdirectory(TVector)
 add_subdirectory(TTriangleMatrixTest)
 add_subdirectory(gtest)
+add_test(NAME TTriangleMatrix_Test 
+         COMMAND TTriangleMatrix_Test
+         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/TTriangleMatrixTest)

@@ -464,7 +464,7 @@ inline TVector<T>& TVector<T>::operator=(TVector<T>&& other) noexcept
 		other.size = 0;
 		other.data = nullptr;
 	}
-	return *this
+	return *this;
 }
 
 template<class T>
