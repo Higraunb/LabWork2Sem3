@@ -1,4 +1,4 @@
-name: C++ Tests
+name: C++ Tests with System Google Test
 
 on:
   pull_request:
@@ -11,13 +11,19 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        submodules: recursive
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake
+        sudo apt-get install -y build-essential cmake libgtest-dev googletest
+
+    - name: Build Google Test
+      run: |
+        sudo apt-get install -y cmake
+        cd /usr/src/gtest
+        sudo cmake CMakeLists.txt
+        sudo make
+        sudo cp *.a /usr/lib
 
     - name: Configure CMake
       run: |
@@ -32,5 +38,5 @@ jobs:
 
     - name: Run tests
       run: |
-        cd build
-        ./TTriangleMatrixTest
+        cd build/TTriangleMatrixTest
+        ./TTriangleMatrix_Test
