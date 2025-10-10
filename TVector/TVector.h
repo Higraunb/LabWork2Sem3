@@ -2,6 +2,7 @@
 #include <initializer_list>
 #include <stdexcept>
 #include <iostream>
+using namespace std;
 
 template <class T>
 class TVector
@@ -38,7 +39,7 @@ public:
 	void push_back(const T& elem);
 	void push_front(const T& elem);
 
-	void pop_back();//удаление последнего элемента
+	void pop_back();
 	void pop_front();
 	
 	TVector<T>& operator=(const TVector<T>& other);
