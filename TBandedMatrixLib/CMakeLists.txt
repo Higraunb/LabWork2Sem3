@@ -1,7 +1,17 @@
- file(GLOB hdrs "*.h*") #Добавляем в переменную hdrs все файлы с расширением .h
-file(GLOB srcs "*.cpp")#Добавляем в переменную srcs все файлы с расширением .h
+# Создаем интерфейсную библиотеку для ленточных матриц
+add_library(TBandedMatrixLib INTERFACE)
 
-add_library(${TBandedMatrixlib} TBandedMatrix ${srcs} ${hdrs})
+# Включаем директории с заголовками
+target_include_directories(TBandedMatrixLib INTERFACE 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 
-target_link_libraries(${TBandedMatrixlib} ${vectorlib})
-target_include_directories(${TBandedMatrixlib} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# Зависимости
+target_link_libraries(TBandedMatrixLib INTERFACE TVector)
+
+# Компиляционные флаги
+target_compile_features(TBandedMatrixLib INTERFACE cxx_std_17)
+
+# Установка
+install(FILES include/TBandedMatrix.h DESTINATION include)
