@@ -1,12 +1,19 @@
-name: C++ Tests - Fixed GTest
+name: CMake Build and Test
 
 on:
+  push:
+    branches: [ main, develop, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop, master ]
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        build_type: [Release, Debug]
+    
+    runs-on: ${{ matrix.os }}
     
     steps:
     - name: Checkout code
@@ -14,34 +21,31 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install dependencies
+    - name: Install dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential cmake
 
-    - name: Build Google Test from source
-      run: |
-        # Клонируем и собираем gtest правильно
-        git clone https://github.com/google/googletest.git /tmp/googletest
-        cd /tmp/googletest
-        mkdir build
-        cd build
-        cmake ..
-        make
-        sudo make install
-
     - name: Configure CMake
       run: |
-        mkdir -p build
-        cd build
-        cmake ..
+        cmake -B ${{github.workspace}}/build \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              -DBUILD_TESTS=ON \
+              -DBUILD_DEMO=ON
 
-    - name: Build project
-      run: |
-        cd build
-        make -j4
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build_type }}
 
-    - name: Run tests
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest --output-on-failure --build-config ${{ matrix.build_type }}
+
+    - name: Run Demo (Optional)
+      working-directory: ${{github.workspace}}/build
       run: |
-        cd build/TTriangleMatrixTest
-        ./TTriangleMatrix_Test
+        if [ "${{ matrix.os }}" == "windows-latest" ]; then
+          ./demo/${{ matrix.build_type }}/LinearAlgebraDemo.exe || echo "Demo not available"
+        else
+          ./demo/LinearAlgebraDemo || echo "Demo not available"
+        fi
