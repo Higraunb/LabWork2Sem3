@@ -1,8 +1,8 @@
-name: C++ Tests with System Google Test
+name: C++ Tests - Fixed GTest
 
 on:
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [ main ]
 
 jobs:
   build-and-test:
@@ -11,19 +11,24 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake libgtest-dev googletest
+        sudo apt-get install -y build-essential cmake
 
-    - name: Build Google Test
+    - name: Build Google Test from source
       run: |
-        sudo apt-get install -y cmake
-        cd /usr/src/gtest
-        sudo cmake CMakeLists.txt
-        sudo make
-        sudo cp *.a /usr/lib
+        # Клонируем и собираем gtest правильно
+        git clone https://github.com/google/googletest.git /tmp/googletest
+        cd /tmp/googletest
+        mkdir build
+        cd build
+        cmake ..
+        make
+        sudo make install
 
     - name: Configure CMake
       run: |
