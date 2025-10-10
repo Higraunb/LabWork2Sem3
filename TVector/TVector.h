@@ -15,9 +15,9 @@ public:
 	TVector(TVector&& other) noexcept;
 	~TVector();
 	
-	size_t GetSize() noexcept;
-	size_t GetCapacity() noexcept;
-	T* GetData() noexcept;
+	size_t GetSize() const noexcept;
+	size_t GetCapacity() const noexcept;
+	T* GetData() const noexcept;
 	
 	void SetSize(const size_t size_);
 	void SetCapacity(const size_t capacity_);
@@ -37,7 +37,6 @@ public:
 	
 	void push_back(const T& elem);
 	void push_front(const T& elem);
-
 
 	void pop_back();//удаление последнего элемента
 	void pop_front();
@@ -64,7 +63,7 @@ private:
 	size_t size;
 };
 template<class O>
-std::ostream& operator<<(std::ostream& out, const TVector<O>& other) {
+std::ostream& operator<<(std::ostream& out, TVector<O>& other) {
 	out << other.GetSize();
 	for (size_t i = 0; i < other.GetSize(); ++i) {
 		out << " " << other[i];
@@ -151,6 +150,7 @@ inline TVector<T>::TVector(const TVector& other)
 	{
 		if (size <= capacity)
 		{
+			data = nullptr;
 			capacity = other.capacity;
 			size = other.size;
 			data = new T[capacity];
@@ -211,19 +211,19 @@ inline TVector<T>::~TVector()
 }
 
 template<class T>
-inline size_t TVector<T>::GetSize() noexcept
+inline size_t TVector<T>::GetSize() const noexcept
 {
 	return size;
 }
 
 template<class T>
-inline size_t TVector<T>::GetCapacity() noexcept
+inline size_t TVector<T>::GetCapacity() const noexcept
 {
 	return capacity;
 }
 
 template<class T>
-inline T* TVector<T>::GetData() noexcept
+inline T* TVector<T>::GetData() const noexcept
 {
 	return data;
 }
@@ -231,7 +231,7 @@ inline T* TVector<T>::GetData() noexcept
 template<class T>
 inline void TVector<T>::SetSize(const size_t size_)
 {
-	if (size_ >= 0)
+	if ((size_ >= 0) && (size_ != size))
 	{
 		if (size_ <= capacity)
 			size = size_;
@@ -249,9 +249,10 @@ inline void TVector<T>::SetSize(const size_t size_)
 			delete[] tmp;
 		}
 	}
-	else
+	else if(size_ < 0)
 		throw std::invalid_argument("size < 0");
 }
+
 
 template<class T>
 inline void TVector<T>::SetCapacity(const size_t capacity_)
@@ -537,4 +538,21 @@ inline TVector<T> TVector<T>::operator+(const TVector<T>& other) const
 	}
 	return *this;
 }
+template<class T>
+class Row {
+public:
+	TVector<T*> row_data;
+	T& operator[](size_t col) 
+	{
+		if (col >= row_data.GetSize())
+			throw invalid_argument("Error");
+		return *row_data[col];
+	}
 
+	const T& operator[](size_t col) const 
+	{
+		if (col >= row_data.GetSize())
+			throw invalid_argument("Error");
+		return *row_data[col];
+	}
+};
