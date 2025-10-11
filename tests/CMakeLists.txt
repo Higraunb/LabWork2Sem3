@@ -1,22 +1,13 @@
-# ТОЛЬКО один исполняемый файл для всех тестов
-add_executable(test_all
-    test_main.cpp
-    test_TVector.cpp
-    test_TTriangleMatrix.cpp
-    test_TDenseMatrix.cpp
-    test_TSparseMatrix.cpp
-    test_TBandedMatrix.cpp
-)
+set(target MatrixTest)
 
-target_link_libraries(test_all
-    gtest
-    gmock
-    TVector
-    TTriangleMatrixLib
-    TDenseMatrixLib
-    TSparseMatrixLib
-    TBandedMatrixLib
-)
+file(GLOB hdrs "*.h*")
+file(GLOB srcs "*.cpp")
 
-include(GoogleTest)
-gtest_discover_tests(test_all)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../gtest")
+
+add_executable(${target} ${srcs} ${hdrs})
+target_link_libraries(${target} gtest ${tbandedmatrixlib})
+target_link_libraries(${target} gtest ${tdensematrixlib})
+target_link_libraries(${target} gtest ${tvectorlib})
+target_link_libraries(${target} gtest ${tsparsematrixlib})
+target_link_libraries(${target} gtest ${ttrianglematrixlib})
