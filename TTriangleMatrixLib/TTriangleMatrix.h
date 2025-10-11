@@ -224,7 +224,7 @@ inline TTriangleMatrix<T> TTriangleMatrix<T>::operator+(const TTriangleMatrix<T>
 	TTriangleMatrix<T> res(data.GetSize());
 	for (size_t i = 0; i < data.GetSize(); i++)
 	{
-		res[i] = data[i] + other.data[i];
+		res.data.push_back(data[i] + other.data[i]);
 	}
 	return res;
 }
@@ -237,7 +237,7 @@ inline TTriangleMatrix<T> TTriangleMatrix<T>::operator-(const TTriangleMatrix<T>
 	TTriangleMatrix<T> res(data.GetSize());
 	for (size_t i = 0; i < data.GetSize(); i++)
 	{
-		res[i] = data[i] - other.data[i];
+		res.data.push_back(data[i] + other.data[i]);
 	}
 	return res;;
 }

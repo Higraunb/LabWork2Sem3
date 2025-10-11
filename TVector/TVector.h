@@ -341,7 +341,6 @@ inline const T* TVector<T>::cend() const noexcept
 template<class T>
 inline bool TVector<T>::empty() const noexcept
 {
-
 	return size == 0;
 }
 

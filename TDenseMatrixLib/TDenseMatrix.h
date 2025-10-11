@@ -72,9 +72,9 @@ inline TDenseMatrix<T>::TDenseMatrix()
 template<class T>
 inline TDenseMatrix<T>::TDenseMatrix(const size_t row_, const size_t column_)
 {
-	data.SetSize(row_ * column_);
 	row = row_;
 	column = column_;
+	data.SetCapacity(row_ * column_);
 }
 
 template<class T>
@@ -89,7 +89,6 @@ inline TDenseMatrix<T>::TDenseMatrix(const TDenseMatrix& other): data(other.data
 {
 	row = other.row;
 	column = other.column;
-	data.SetSize(row * column);
 }
 
 template<class T>
@@ -158,7 +157,7 @@ inline void TDenseMatrix<T>::SetRow(const size_t row_)
 	if (row_ != row)
 	{
 		row = row_;
-		data.SetSize(row * column);
+		data.SetCapacity(row * column);
 	}
 }
 
@@ -168,7 +167,7 @@ inline void TDenseMatrix<T>::SetColumn(const size_t column_)
 	if (column_ != column)
 	{
 		column = column_;
-		data.SetSize(row * column);
+		data.SetCapacity(row * column);
 	}
 }
 
@@ -293,7 +292,8 @@ inline TDenseMatrix<T>& TDenseMatrix<T>::operator=(const TDenseMatrix<T>& other)
 		if (row * column)
 		{
 			data.SetSize(row * column);
-			for (auto i = 0; i < row * column; i++) data[i] = other.data[i];
+			for (auto i = 0; i < row * column; i++) 
+				data[i] = other.data[i];
 		}
 		else data = T();
 	}
@@ -320,8 +320,8 @@ inline TDenseMatrix<T> TDenseMatrix<T>::operator+(const TDenseMatrix<T>& other)
 	if ((column == other.column) && (row == other.row))
 	{
 		TDenseMatrix<T> res(row, column);
-		for (size_t i = 0; i < res.data.GetSize(); i++)
-			res.data[i] = data[i] + other.data[i];
+		for (size_t i = 0; i < other.data.GetSize(); i++)
+			res.push_back(data[i] + other.data[i]);
 		return res;
 	}
 	else
@@ -334,8 +334,8 @@ inline TDenseMatrix<T> TDenseMatrix<T>::operator-(const TDenseMatrix<T>& other)
 	if (column == other.column && row == other.row)
 	{
 		TDenseMatrix<T> res(row, column);
-		for (auto i = 0; i < res.data.GetSize(); i++) 
-			res.data[i] = data[i] - other.data[i];
+		for (auto i = 0; i < other.data.GetSize(); i++)
+			res.push_back(data[i] - other.data[i]);
 		return res;
 	}
 	else
@@ -352,8 +352,10 @@ inline TDenseMatrix<T> TDenseMatrix<T>::operator*(const TDenseMatrix<T>& other)
 		{
 			for (int j = 0; j < res.column; ++j)
 			{
+				T sum = 0;
 				for (int k = 0; k < column; ++k)
-					res.data[i * res.column + j] += data[i * column + k] * other.data[k * other.column + j];
+					sum += data[i * column + k] * other.data[k * other.column + j];
+				res.push_back(sum);
 			}
 		}
 		return res;

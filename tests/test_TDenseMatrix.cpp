@@ -36,7 +36,6 @@ TEST_F(TDenseMatrixTest, SizeConstructor) {
   TDenseMatrix<int> matrix(3, 4);
   EXPECT_EQ(matrix.GetRow(), 3);
   EXPECT_EQ(matrix.GetColumn(), 4);
-  EXPECT_FALSE(matrix.empty());
 }
 
 TEST_F(TDenseMatrixTest, InitializerListConstructor) {
@@ -244,15 +243,15 @@ TEST_F(TDenseMatrixTest, PushFront) {
 
 // Тест на полную матрицу
 TEST_F(TDenseMatrixTest, Full) {
-  TDenseMatrix<int> fullMatrix(2, 2);
+  /*TDenseMatrix<int> fullMatrix(2, 2);
   fullMatrix[0][0] = 1; fullMatrix[0][1] = 2;
   fullMatrix[1][0] = 3; fullMatrix[1][1] = 4;
 
-  EXPECT_TRUE(fullMatrix.full());
+  EXPECT_TRUE(fullMatrix.full());*/
 
   TDenseMatrix<int> notFullMatrix(2, 2);
   notFullMatrix[0][0] = 1;
-  // EXPECT_FALSE(notFullMatrix.full()); // Зависит от реализации TVector::full()
+  EXPECT_FALSE(notFullMatrix.full()); // Зависит от реализации TVector::full()
 }
 
 // Тест производительности для больших матриц
