@@ -321,7 +321,7 @@ inline TDenseMatrix<T> TDenseMatrix<T>::operator+(const TDenseMatrix<T>& other)
 	{
 		TDenseMatrix<T> res(row, column);
 		for (size_t i = 0; i < other.data.GetSize(); i++)
-			res.push_back(data[i] + other.data[i]);
+			res.data.push_back(data[i] + other.data[i]);
 		return res;
 	}
 	else
@@ -335,7 +335,7 @@ inline TDenseMatrix<T> TDenseMatrix<T>::operator-(const TDenseMatrix<T>& other)
 	{
 		TDenseMatrix<T> res(row, column);
 		for (size_t i = 0; i < other.data.GetSize(); i++)
-			res.push_back(data[i] - other.data[i]);
+			res.data.push_back(data[i] - other.data[i]);
 		return res;
 	}
 	else
