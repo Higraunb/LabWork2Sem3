@@ -232,28 +232,34 @@ inline T* TVector<T>::GetData() const noexcept
 template<class T>
 inline void TVector<T>::SetSize(const size_t size_)
 {
-	if ((size_ >= 0) && (size_ != size))
+	if (size_ != size)
 	{
 		if (size_ <= capacity)
+		{
 			size = size_;
+		}
 		else
 		{
-			T* tmp = new T[size];
-			for (size_t i = 0; i < size; i++)
-				tmp[i] = data[i];
+			T* tmp = nullptr;
+			if (size > 0)
+			{
+				tmp = new T[size];
+				for (size_t i = 0; i < size; i++)
+					tmp[i] = std::move(data[i]); 
+			}
 			delete[] data;
 			capacity = size_;
 			data = new T[capacity];
-			for (size_t i = 0; i < size; i++)
-				data[i] = tmp[i];
+			if (size > 0 && tmp != nullptr)
+			{
+				for (size_t i = 0; i < size; i++)
+					data[i] = std::move(tmp[i]);
+				delete[] tmp;
+			}
 			size = size_;
-			delete[] tmp;
 		}
 	}
-	else if(size_ < 0)
-		throw std::invalid_argument("size < 0");
 }
-
 
 template<class T>
 inline void TVector<T>::SetCapacity(const size_t capacity_)
