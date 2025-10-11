@@ -238,12 +238,12 @@ inline void TVector<T>::SetSize(const size_t size_)
 			size = size_;
 		else
 		{
-			T* tmp = new T[size]{};
+			T* tmp = new T[size];
 			for (size_t i = 0; i < size; i++)
 				tmp[i] = data[i];
 			delete[] data;
 			capacity = size_;
-			data = new T[capacity]{};
+			data = new T[capacity];
 			for (size_t i = 0; i < size; i++)
 				data[i] = tmp[i];
 			size = size_;
