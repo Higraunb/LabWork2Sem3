@@ -1,8 +1,10 @@
 name: C++ Tests - Fixed GTest
 
 on:
+  push:
+    branches: [ main, master, newBranch ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master, newBranch ]
 
 jobs:
   build-and-test:
@@ -10,29 +12,16 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive
+      uses: actions/checkout@v3
 
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential cmake
 
-    - name: Build Google Test from source
-      run: |
-        # Клонируем и собираем gtest правильно
-        git clone https://github.com/google/googletest.git /tmp/googletest
-        cd /tmp/googletest
-        mkdir build
-        cd build
-        cmake ..
-        make
-        sudo make install
-
     - name: Configure CMake
       run: |
-        mkdir -p build
+        mkdir build
         cd build
         cmake ..
 
@@ -43,5 +32,5 @@ jobs:
 
     - name: Run tests
       run: |
-        cd build/TTriangleMatrixTest
-        ./TTriangleMatrix_Test
+        cd build
+        ./tests/MatrixTest
