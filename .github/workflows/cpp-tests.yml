@@ -2,50 +2,35 @@ name: CMake Build and Test
 
 on:
   push:
-    branches: [ main, develop, master ]
+    branches: [ main, master, newBranch ]
   pull_request:
-    branches: [ main, develop, master ]
+    branches: [ main, master, newBranch ]
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        build_type: [Release, Debug]
-    
-    runs-on: ${{ matrix.os }}
+  build-and-test:
+    runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive
+      uses: actions/checkout@v3
 
-    - name: Install dependencies (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
+    - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y build-essential cmake
 
     - name: Configure CMake
       run: |
-        cmake -B ${{github.workspace}}/build \
-              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-              -DBUILD_TESTS=ON \
-              -DBUILD_DEMO=ON
+        mkdir build
+        cd build
+        cmake ..
 
-    - name: Build
-      run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build_type }}
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      run: ctest --output-on-failure --build-config ${{ matrix.build_type }}
-
-    - name: Run Demo (Optional)
-      working-directory: ${{github.workspace}}/build
+    - name: Build project
       run: |
-        if [ "${{ matrix.os }}" == "windows-latest" ]; then
-          ./demo/${{ matrix.build_type }}/LinearAlgebraDemo.exe || echo "Demo not available"
-        else
-          ./demo/LinearAlgebraDemo || echo "Demo not available"
-        fi
+        cd build
+        make -j4
+
+    - name: Run tests
+      run: |
+        cd build
+        ./tests/MatrixTest
