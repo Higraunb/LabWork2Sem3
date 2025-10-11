@@ -113,7 +113,8 @@ TEST_F(TDenseMatrixTest, Clear) {
 }
 
 // Тесты арифметических операций
-TEST_F(TDenseMatrixTest, Addition) {
+TEST_F(TDenseMatrixTest, Addition) 
+{
   TDenseMatrix<int> matrixA = { {1, 2}, {3, 4} };
   TDenseMatrix<int> matrixB = { {5, 6}, {7, 8} };
 
