@@ -331,10 +331,10 @@ inline TDenseMatrix<T> TDenseMatrix<T>::operator+(const TDenseMatrix<T>& other)
 template<class T>
 inline TDenseMatrix<T> TDenseMatrix<T>::operator-(const TDenseMatrix<T>& other)
 {
-	if (column == other.column && row == other.row)
+	if ((column == other.column) && (row == other.row))
 	{
 		TDenseMatrix<T> res(row, column);
-		for (auto i = 0; i < other.data.GetSize(); i++)
+		for (size_t i = 0; i < other.data.GetSize(); i++)
 			res.push_back(data[i] - other.data[i]);
 		return res;
 	}
