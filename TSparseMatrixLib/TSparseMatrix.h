@@ -293,7 +293,7 @@ inline TSparseMatrix<T>& TSparseMatrix<T>::operator=(const TSparseMatrix<T>& oth
 	data = other.data;
 	dim = other.dim;
 	width = other.width;
-	return *this
+	return *this;
 }
 
 template<class T>
@@ -305,7 +305,7 @@ inline TSparseMatrix<T>& TSparseMatrix<T>::operator=(TSparseMatrix<T>&& other) n
 	other.dim = 0;
 	other.width = 0;
 	other.data = new TVector<T>();
-	return *this
+	return *this;
 }
 
 template<class T>
