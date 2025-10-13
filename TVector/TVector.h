@@ -272,17 +272,26 @@ inline void TVector<T>::SetCapacity(const size_t capacity_)
 	}
 	else
 	{
-		T* tmp = new T[size]{};
-		for (size_t i = 0; i < size; i++)
-			tmp[i] = data[i];
-		delete[] data;
-		capacity = capacity_;
-		if (capacity < size)
-			size = capacity;
-		data = new T[capacity]{};
-		for (size_t i = 0; i < size; i++)
-			data[i] = tmp[i];
-		delete[] tmp;
+		if (size == 0)
+		{
+			delete[] data;
+			capacity = capacity_;
+			data = new T[capacity]{};
+		}
+		else
+		{
+			T* tmp = new T[size]{};
+			for (size_t i = 0; i < size; i++)
+				tmp[i] = data[i];
+			delete[] data;
+			capacity = capacity_;
+			if (capacity < size)
+				size = capacity;
+			data = new T[capacity]{};
+			for (size_t i = 0; i < size; i++)
+				data[i] = tmp[i];
+			delete[] tmp;
+		}
 	}
 }
 
