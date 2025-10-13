@@ -149,17 +149,12 @@ inline TVector<T>::TVector(const TVector& other)
 {
 	if (other.capacity != 0)
 	{
-		if (size <= capacity)
-		{
-			data = nullptr;
-			capacity = other.capacity;
-			size = other.size;
-			data = new T[capacity];
-			for (size_t i = 0; i < size; i++)
-					data[i] = other.data[i];
-		}
-		else
-			throw std::invalid_argument("size > capacity");
+		data = nullptr;
+		capacity = other.capacity;
+		size = other.size;
+		data = new T[capacity];
+		for (size_t i = 0; i < size; i++)
+				data[i] = other.data[i];
 	}
 	else
 	{

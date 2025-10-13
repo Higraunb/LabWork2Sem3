@@ -135,17 +135,17 @@ TEST_F(TDenseMatrixTest, AdditionThrowsOnSizeMismatch) {
     }, std::invalid_argument);
 }
 
-//TEST_F(TDenseMatrixTest, Subtraction) {
-//  TDenseMatrix<int> matrixA = { {5, 6}, {7, 8} };
-//  TDenseMatrix<int> matrixB = { {1, 2}, {3, 4} };
-//
-//  TDenseMatrix<int> result = matrixA - matrixB;
-//
-//  EXPECT_EQ(result[0][0], 4);
-//  EXPECT_EQ(result[0][1], 4);
-//  EXPECT_EQ(result[1][0], 4);
-//  EXPECT_EQ(result[1][1], 4);
-//}
+TEST_F(TDenseMatrixTest, Subtraction) {
+  TDenseMatrix<int> matrixA = { {5, 6}, {7, 8} };
+  TDenseMatrix<int> matrixB = { {1, 2}, {3, 4} };
+
+  TDenseMatrix<int> result = matrixA - matrixB;
+
+  EXPECT_EQ(result[0][0], 4);
+  EXPECT_EQ(result[0][1], 4);
+  EXPECT_EQ(result[1][0], 4);
+  EXPECT_EQ(result[1][1], 4);
+}
 
 TEST_F(TDenseMatrixTest, Multiplication) {
   // 2x3 * 3x2 = 2x2
