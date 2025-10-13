@@ -399,5 +399,5 @@ inline ostream& operator<<(ostream& out, TSparseMatrix<O>& other)
 template<class O>
 inline istream& operator>>(istream& input, TSparseMatrix<O>& other)
 {
-	 TODO: вставьте здесь оператор return
+	return input;
 }
