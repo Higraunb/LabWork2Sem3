@@ -264,25 +264,26 @@ inline void TVector<T>::SetSize(const size_t size_)
 template<class T>
 inline void TVector<T>::SetCapacity(const size_t capacity_)
 {
-	if (capacity_ >= 0)
+	if (capacity_ <= capacity)
 	{
-		if (capacity_ <= capacity)
-			capacity = capacity_;
-		else
-		{
-			T* tmp = new T[size]{};
-			for (size_t i = 0; i < size; i++)
-				tmp[i] = data[i];
-			delete[] data;
-			capacity = capacity_;
-			data = new T[capacity]{};
-			for (size_t i = 0; i < size; i++)
-				data[i] = tmp[i];
-			delete[] tmp;
-		}
+		capacity = capacity_;
+		if (capacity < size)
+			size = capacity;
 	}
 	else
-		throw std::invalid_argument("capacity < 0");
+	{
+		T* tmp = new T[size]{};
+		for (size_t i = 0; i < size; i++)
+			tmp[i] = data[i];
+		delete[] data;
+		capacity = capacity_;
+		if (capacity < size)
+			size = capacity;
+		data = new T[capacity]{};
+		for (size_t i = 0; i < size; i++)
+			data[i] = tmp[i];
+		delete[] tmp;
+	}
 }
 
 template<class T>

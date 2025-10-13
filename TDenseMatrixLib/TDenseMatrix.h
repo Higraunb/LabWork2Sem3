@@ -41,8 +41,8 @@ public:
 	Row<T> operator[](size_t row_index);
 	ConstRow<T> operator[](size_t row_index) const;
 	
-	TDenseMatrix& operator = (const TDenseMatrix<T>& other);
-	TDenseMatrix& operator = (TDenseMatrix <T>&& other) noexcept;
+	TDenseMatrix<T>& operator = (const TDenseMatrix<T>& other);
+	TDenseMatrix<T>& operator = (TDenseMatrix <T>&& other) noexcept;
 	TDenseMatrix<T> operator + (const TDenseMatrix<T>& other);
 	TDenseMatrix<T> operator - (const TDenseMatrix<T>& other);
 	TDenseMatrix<T> operator * (const TDenseMatrix<T>& other);
@@ -157,7 +157,7 @@ inline void TDenseMatrix<T>::SetRow(const size_t row_)
 	if (row_ != row)
 	{
 		row = row_;
-		data.SetCapacity(row * column);
+		data.SetSize(row * column);
 	}
 }
 
@@ -167,7 +167,7 @@ inline void TDenseMatrix<T>::SetColumn(const size_t column_)
 	if (column_ != column)
 	{
 		column = column_;
-		data.SetCapacity(row * column);
+		data.SetSize(row * column);
 	}
 }
 

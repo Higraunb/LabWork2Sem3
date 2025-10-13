@@ -31,10 +31,9 @@ public:
 	void Clear() noexcept;
 
 	Row<T> operator[](size_t row_index);
-	const Row<T> operator[](size_t row_index) const;
 
-	TTriangleMatrix& operator = (const TTriangleMatrix<T>& other);
-	TTriangleMatrix& operator = (TTriangleMatrix <T>&& other) noexcept;
+	TTriangleMatrix<T>& operator = (const TTriangleMatrix<T>& other);
+	TTriangleMatrix<T>& operator = (TTriangleMatrix <T>&& other) noexcept;
 	TTriangleMatrix<T> operator + (const TTriangleMatrix<T>& other);
 	TTriangleMatrix<T> operator - (const TTriangleMatrix<T>& other);
 	TTriangleMatrix<T> operator * (TTriangleMatrix<T>& other);
@@ -61,13 +60,13 @@ template<class T>
 TTriangleMatrix<T>::TTriangleMatrix(const size_t dim_)
 {
 	dim = dim_;
-	data.SetSize(dim * (dim + 1) / 2);
+	data.SetCapacity(dim * (dim + 1) / 2);
 }
 
 template<class T>
 TTriangleMatrix<T>::TTriangleMatrix(const TTriangleMatrix& other): data(other.data)
 {
-	dim = other.data.GetSize();
+	dim = other.dim;
 }
 
 template<class T>
@@ -110,7 +109,8 @@ TTriangleMatrix<T>::TTriangleMatrix(std::initializer_list<initializer_list<T>> i
 
 	size_t data_index = 0;
 	for (const auto& row_list : init_list)
-		for (const T& value : row_list) data[data_index++] = value;
+		for (const T& value : row_list)
+			data[data_index++] = value;
 }
 
 template<class T>
@@ -128,7 +128,11 @@ inline TVector<T> TTriangleMatrix<T>::GetData()
 template<class T>
 inline void TTriangleMatrix<T>::SetDim(const size_t dim_)
 {
-	dim = dim_;
+	if(dim != dim_)
+	{
+		dim = dim_;
+		data.SetSize(dim * (dim + 1) / 2);
+	}
 }
 
 template<class T>
@@ -189,20 +193,31 @@ inline void TTriangleMatrix<T>::Clear() noexcept
 template<class T>
 inline Row<T> TTriangleMatrix<T>::operator[](size_t row_index)
 {
-	return Row<T>();
+	if (row_index >= dim)
+		throw invalid_argument("Error out of size");
+
+	Row<T> result;
+	result.row_data.SetSize(dim);
+	
+	for (auto j = 0; j < dim; j++)
+	{
+		if (j <= row_index)
+		{
+			size_t data_index = (row_index * (row_index + 1) / 2) + j;
+			result.row_data[j] = &data[data_index];
+		}
+		else result.row_data[j] = nullptr;
+	}
+	return result;
 }
 
-template<class T>
-inline const Row<T> TTriangleMatrix<T>::operator[](size_t row_index) const
-{
-	return Row<T>();
-}
+
 
 template<class T>
 inline TTriangleMatrix<T>& TTriangleMatrix<T>::operator=(const TTriangleMatrix<T>& other)
 {
 	data = other.data;
-	dim = other.data.GetSize();
+	dim = other.dim;
 	return *this;
 }
 
@@ -210,7 +225,7 @@ template<class T>
 inline TTriangleMatrix<T>& TTriangleMatrix<T>::operator=(TTriangleMatrix<T>&& other) noexcept
 {
 	data = other.data;
-	dim = other.GetDim();
+	dim = other.dim;
 	other.data = T();
 	other.dim = 0;
 	return *this;
@@ -219,9 +234,9 @@ inline TTriangleMatrix<T>& TTriangleMatrix<T>::operator=(TTriangleMatrix<T>&& ot
 template<class T>
 inline TTriangleMatrix<T> TTriangleMatrix<T>::operator+(const TTriangleMatrix<T>& other)
 {
-	if (data.GetSize() != other.data.GetSize())
+	if (dim != other.dim)
 		throw invalid_argument("Error matrix size not equals");
-	TTriangleMatrix<T> res(data.GetSize());
+	TTriangleMatrix<T> res(dim);
 	for (size_t i = 0; i < data.GetSize(); i++)
 	{
 		res.data.push_back(data[i] + other.data[i]);
@@ -232,14 +247,14 @@ inline TTriangleMatrix<T> TTriangleMatrix<T>::operator+(const TTriangleMatrix<T>
 template<class T>
 inline TTriangleMatrix<T> TTriangleMatrix<T>::operator-(const TTriangleMatrix<T>& other)
 {
-	if (data.GetSize() != other.data.GetSize())
+	if (dim != other.dim)
 		throw invalid_argument("Error matrix size not equals");
-	TTriangleMatrix<T> res(data.GetSize());
+	TTriangleMatrix<T> res(dim);
 	for (size_t i = 0; i < data.GetSize(); i++)
 	{
-		res.data.push_back(data[i] + other.data[i]);
+		res.data.push_back(data[i] - other.data[i]);
 	}
-	return res;;
+	return res;
 }
 
 template<class T>
@@ -255,7 +270,7 @@ inline TTriangleMatrix<T> TTriangleMatrix<T>::operator*(TTriangleMatrix<T>& othe
 			T sum = T();
 			for (size_t k = j; k <= i; k++)
 				sum += data[(i * (i + 1) / 2) + k] * other.data[(k * (k + 1) / 2) + j];
-			res.data[(i * (i + 1) / 2) + j] = sum;
+			res.data.push_back(sum);
 		}
 	}
 	return res;
@@ -276,7 +291,7 @@ inline bool TTriangleMatrix<T>::operator!=(const TTriangleMatrix<T>& other)
 template<class O>
 inline ostream& operator<<(ostream& out, TTriangleMatrix<O>& other)
 {
-	for (size_t i = 0; i < other.GetDim(); i++)
+	for (size_t i = 0; i < other.dim; i++)
 	{
 		for (size_t j = 0; j <= i; j++)
 		{
@@ -290,7 +305,7 @@ inline ostream& operator<<(ostream& out, TTriangleMatrix<O>& other)
 template<class O>
 inline istream& operator>>(istream& input, TTriangleMatrix<O>& other)
 {
-	for (size_t i = 0; i < other.GetDim(); i++)
+	for (size_t i = 0; i < other.dim; i++)
 	{
 		for (size_t j = 0; j <= i; j++)
 		{
