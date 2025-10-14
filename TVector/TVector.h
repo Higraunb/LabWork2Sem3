@@ -152,6 +152,8 @@ inline TVector<T>::TVector(const TVector& other)
 		data = nullptr;
 		capacity = other.capacity;
 		size = other.size;
+		if (size > capacity)
+			capacity = size;
 		data = new T[capacity];
 		for (size_t i = 0; i < size; i++)
 				data[i] = other.data[i];

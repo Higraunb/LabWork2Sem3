@@ -21,13 +21,11 @@ public:
 	void SetDim(const size_t dim_);
 	void SetWidth(const size_t width_);
 
-	T* begin() noexcept;
-	const T* begin() const noexcept;
-	const T* cbegin() const noexcept;
+	TVector<T> begin() noexcept;
+	const TVector<T> cbegin() const noexcept;
 
-	T* end() noexcept;
-	const T* end() const noexcept;
-	const T* cend() const noexcept;
+	TVector<T> end() noexcept;
+	const TVector<T> cend() const noexcept;
 
 	bool empty() const noexcept;
 	bool full() const noexcept;
@@ -70,7 +68,7 @@ inline TSparseMatrix<T>::TSparseMatrix(const size_t dim_, const size_t width_)
 	size_t sum = 0;
 	for (size_t i = 0; i < width; i++)
 		sum += dim - i;
-	data = new TVector<T>(sum);
+	data.SetSize(sum);
 }
 
 template<class T>
@@ -88,7 +86,7 @@ inline TSparseMatrix<T>::TSparseMatrix(const size_t dim_, const size_t width_, c
 	size_t sum = 0;
 	for (size_t i = 0; i < width; i++)
 		sum += dim - i;
-	data = new TVector<T>(sum, other);
+	data = TVector<T>(sum, other);
 }
 
 template<class T>
@@ -110,7 +108,6 @@ inline TSparseMatrix<T>::TSparseMatrix(std::initializer_list<initializer_list<T>
 		return;
 	}
 
-	// Определяем ширину ленты
 	width = 0;
 	for (const auto& row : init_list) {
 		size_t row_nonzero = 0;
@@ -120,25 +117,25 @@ inline TSparseMatrix<T>::TSparseMatrix(std::initializer_list<initializer_list<T>
 		width = std::max(width, row_nonzero);
 	}
 
-	// Вычисляем размер data
 	size_t total_size = 0;
 	for (size_t i = 0; i < width; i++)
 		total_size += dim - i;
 	data = TVector<T>(total_size, T(0));
 
-	// Заполняем данными через operator[]
 	size_t row_idx = 0;
-	for (const auto& row_list : init_list) {
+	for (const auto& row_list : init_list)
+	{
 		size_t col_idx = 0;
-		Row<T> row_proxy = (*this)[row_idx]; // Используем наш operator[]
-		for (const auto& elem : row_list) {
-			if (elem != T(0) && col_idx < dim) {
-				try {
+		Row<T> row_proxy = (*this)[row_idx];
+		for (const auto& elem : row_list) 
+		{
+			if (elem != T(0) && col_idx < dim)
+			{
+				try
+				{
 					row_proxy[col_idx] = elem;
 				}
-				catch (const std::invalid_argument&) {
-					// Игнорируем элементы вне ленты
-				}
+				catch (const std::invalid_argument&){}
 			}
 			col_idx++;
 		}
@@ -190,37 +187,25 @@ inline void TSparseMatrix<T>::SetWidth(const size_t width_)
 	}
 }
 template<class T>
-inline T* TSparseMatrix<T>::begin() noexcept
+inline TVector<T> TSparseMatrix<T>::begin() noexcept
 {
 	return data;
 }
 
 template<class T>
-inline const T* TSparseMatrix<T>::begin() const noexcept
+inline const TVector<T> TSparseMatrix<T>::cbegin() const noexcept
 {
 	return data;
 }
 
 template<class T>
-inline const T* TSparseMatrix<T>::cbegin() const noexcept
-{
-	return data;
-}
-
-template<class T>
-inline T* TSparseMatrix<T>::end() noexcept
+inline TVector<T> TSparseMatrix<T>::end() noexcept
 {
 	return data + data.GetSize();
 }
 
 template<class T>
-inline const T* TSparseMatrix<T>::end() const noexcept
-{
-	return data + data.GetSize();
-}
-
-template<class T>
-inline const T* TSparseMatrix<T>::cend() const noexcept
+inline const TVector<T> TSparseMatrix<T>::cend() const noexcept
 {
 	return data + data.GetSize();
 }
@@ -304,7 +289,7 @@ inline TSparseMatrix<T>& TSparseMatrix<T>::operator=(TSparseMatrix<T>&& other) n
 	width = other.width;
 	other.dim = 0;
 	other.width = 0;
-	other.data = new TVector<T>();
+	other.data = TVector<T>();
 	return *this;
 }
 
@@ -313,7 +298,8 @@ inline TSparseMatrix<T> TSparseMatrix<T>::operator+(const TSparseMatrix<T>& othe
 {
 	if (dim != other.dim)
 		throw invalid_argument("Error matrix size not equals");
-	TSparseMatrix<T> res(dim);
+	TSparseMatrix<T> res(dim, width);
+	res.data.SetSize(0);
 	for (size_t i = 0; i < data.GetSize(); i++)
 	{
 		res.data.push_back(data[i] + other.data[i]);
@@ -326,7 +312,8 @@ inline TSparseMatrix<T> TSparseMatrix<T>::operator-(const TSparseMatrix<T>& othe
 {
 	if (dim != other.dim)
 		throw invalid_argument("Error matrix size not equals");
-	TSparseMatrix<T> res(dim);
+	TSparseMatrix<T> res(dim, width);
+	res.data.SetSize(0);
 	for (size_t i = 0; i < data.GetSize(); i++)
 	{
 		res.data.push_back(data[i] - other.data[i]);
@@ -335,7 +322,7 @@ inline TSparseMatrix<T> TSparseMatrix<T>::operator-(const TSparseMatrix<T>& othe
 }
 
 template<class T>
-inline TSparseMatrix<T> TSparseMatrix<T>::operator*(TSparseMatrix<T>& other)
+TSparseMatrix<T> TSparseMatrix<T>::operator*(TSparseMatrix<T>& other)
 {
 	if (dim != other.dim) {
 		throw std::invalid_argument("Matrix dimensions must match for multiplication");
@@ -343,26 +330,30 @@ inline TSparseMatrix<T> TSparseMatrix<T>::operator*(TSparseMatrix<T>& other)
 
 	size_t res_width = std::min(dim, width + other.width - 1);
 	TSparseMatrix<T> result(dim, res_width);
-
+	result.data.SetSize(result.data.GetCapacity());
 	for (size_t i = 0; i < dim; i++) {
 		for (size_t j = i; j < std::min(dim, i + res_width); j++) {
-			T sum = 0;
+			T sum = T(0);
 
 			size_t k_start = std::max(
-				(i > res_width - 1) ? i - res_width + 1 : 0,
-				(j > res_width - 1) ? j - res_width + 1 : 0
+				(i >= width) ? i - width + 1 : 0,
+				(j >= other.width) ? j - other.width + 1 : 0
 			);
 			size_t k_end = std::min(
 				std::min(i + width, j + other.width),
 				dim
 			);
-
 			for (size_t k = k_start; k < k_end; k++) {
-				sum += this[i][k] * other[k][j];
+				T a_ik = (*this)[i][k];
+				T b_kj = other[k][j];
+				sum += a_ik * b_kj;
 			}
-			result.set(i, j, sum);
+			if (sum != T(0)) {
+				result[i][j] = sum;
+			}
 		}
 	}
+
 	return result;
 }
 
@@ -391,7 +382,7 @@ inline ostream& operator<<(ostream& out, TSparseMatrix<O>& other)
 			j++;
 			out << "\n";
 		}
-		out << other.data[i];
+		out << other.data[i] << " ";
 	}
 	return out;
 }

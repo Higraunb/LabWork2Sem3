@@ -20,13 +20,13 @@ public:
 	void SetRow(const size_t row_);
 	void SetColumn(const size_t column_);
 
-	//TVector<T> begin() noexcept;
-	//const TVector<T> begin() const noexcept;
-	//const TVector<T> cbegin() const noexcept;
+	TVector<T> begin() noexcept;
+	const TVector<T> begin() const noexcept;
+	const TVector<T> cbegin() const noexcept;
 
-	//TVector<T> end() noexcept;
-	//const TVector<T> end() const noexcept;
-	//const TVector<T> cend() const noexcept;
+	TVector<T> end() noexcept;
+	const TVector<T> end() const noexcept;
+	const TVector<T> cend() const noexcept;
 
 	bool empty() const noexcept;
 	bool full() const noexcept;
@@ -171,41 +171,41 @@ inline void TDenseMatrix<T>::SetColumn(const size_t column_)
 	}
 }
 
-//template<class T>
-//inline TVector<T> TDenseMatrix<T>::begin() noexcept
-//{
-//	return data;
-//}
-//
-//template<class T>
-//inline const TVector<T> TDenseMatrix<T>::begin() const noexcept
-//{
-//	return data;
-//}
-//
-//template<class T>
-//inline const TVector<T> TDenseMatrix<T>::cbegin() const noexcept
-//{
-//	return data;
-//}
-//
-//template<class T>
-//inline TVector<T> TDenseMatrix<T>::end() noexcept
-//{
-//	return  data + data.GetSize();
-//}
-//
-//template<class T>
-//inline const TVector<T> TDenseMatrix<T>::end() const noexcept
-//{
-//	return data + data.GetSize();
-//}
-//
-//template<class T>
-//inline const TVector<T> TDenseMatrix<T>::cend() const noexcept
-//{
-//	return data + data.GetSize();
-//}
+template<class T>
+inline TVector<T> TDenseMatrix<T>::begin() noexcept
+{
+	return data;
+}
+
+template<class T>
+inline const TVector<T> TDenseMatrix<T>::begin() const noexcept
+{
+	return data;
+}
+
+template<class T>
+inline const TVector<T> TDenseMatrix<T>::cbegin() const noexcept
+{
+	return data;
+}
+
+template<class T>
+inline TVector<T> TDenseMatrix<T>::end() noexcept
+{
+	return  data + data.GetSize();
+}
+
+template<class T>
+inline const TVector<T> TDenseMatrix<T>::end() const noexcept
+{
+	return data + data.GetSize();
+}
+
+template<class T>
+inline const TVector<T> TDenseMatrix<T>::cend() const noexcept
+{
+	return data + data.GetSize();
+}
 
 template<class T>
 inline bool TDenseMatrix<T>::empty() const noexcept

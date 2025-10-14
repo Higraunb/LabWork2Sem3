@@ -147,7 +147,8 @@ TEST_F(TDenseMatrixTest, Subtraction) {
   EXPECT_EQ(result[1][1], 4);
 }
 
-TEST_F(TDenseMatrixTest, Multiplication) {
+TEST_F(TDenseMatrixTest, Multiplication) 
+{
   // 2x3 * 3x2 = 2x2
   TDenseMatrix<int> result = matrix2x3 * matrix3x2;
 
