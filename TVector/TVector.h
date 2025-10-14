@@ -514,7 +514,7 @@ inline bool TVector<T>::operator==(const TVector<T>& other)
 	else
 	{
 		for (size_t i = 0; i < size; ++i)
-			if (data[i] != other[i])
+			if (data[i] != other.data[i])
 				return false;
 	}
 	return true;
