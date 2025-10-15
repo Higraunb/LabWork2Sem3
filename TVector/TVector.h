@@ -2,6 +2,7 @@
 #include <initializer_list>
 #include <stdexcept>
 #include <iostream>
+
 using namespace std;
 
 template <class T> class TBandedMatrix;

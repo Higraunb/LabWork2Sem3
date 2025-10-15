@@ -456,11 +456,11 @@ inline bool TBandedMatrix<T>::operator!=(const TBandedMatrix<T>& other)
 template<class O>
 inline ostream& operator<<(ostream& out, TBandedMatrix<O>& other)
 {
-	// TODO: вставьте здесь оператор return
+  return out;
 }
 
 template<class O>
 inline istream& operator>>(istream& input, TBandedMatrix<O>& other)
 {
-	// TODO: вставьте здесь оператор return
+  return input;
 }

@@ -121,7 +121,7 @@ inline T* TDenseMatrix<T>::begin() noexcept
 template<class T>
 inline const T* TDenseMatrix<T>::cbegin() const noexcept
 {
-	return data.ñbegin();
+	return data.cbegin();
 }
 
 template<class T>
@@ -133,7 +133,7 @@ inline T* TDenseMatrix<T>::end() noexcept
 template<class T>
 inline const T* TDenseMatrix<T>::cend() const noexcept
 {
-	return data.ñend();
+	return data.cend();
 }
 
 template<class T>
