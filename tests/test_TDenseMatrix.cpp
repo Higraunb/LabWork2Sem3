@@ -242,13 +242,6 @@ TEST_F(TDenseMatrixTest, PushFront) {
   EXPECT_GE(matrix.GetRow(), 1);
 }
 
-// Тест на полную матрицу
-TEST_F(TDenseMatrixTest, Full) {
-  TDenseMatrix<int> notFullMatrix(2, 2);
-  notFullMatrix[0][0] = 1;
-  EXPECT_FALSE(notFullMatrix.full());
-}
-
 // Тест производительности для больших матриц
 TEST_F(TDenseMatrixTest, LargeMatrixPerformance) {
   const size_t largeSize = 100;

@@ -1,6 +1,5 @@
+#pragma once
 #include "TVector.h"
-#include <initializer_list>
-using namespace std;
 template <class T>
 class TTriangleMatrix
 {
@@ -8,9 +7,9 @@ public:
 
 	TTriangleMatrix();
 	TTriangleMatrix(const size_t dim_);
-	TTriangleMatrix(const TTriangleMatrix& other);
+	TTriangleMatrix(const TTriangleMatrix<T>& other);
 	TTriangleMatrix(size_t dim_, const T& other);
-	TTriangleMatrix(TTriangleMatrix&& other);
+	TTriangleMatrix(TTriangleMatrix<T>&& other);
 	TTriangleMatrix(std::initializer_list<initializer_list<T>> init_list);
 
 	size_t GetDim();
@@ -64,19 +63,19 @@ TTriangleMatrix<T>::TTriangleMatrix(const size_t dim_)
 }
 
 template<class T>
-TTriangleMatrix<T>::TTriangleMatrix(const TTriangleMatrix& other): data(other.data)
+TTriangleMatrix<T>::TTriangleMatrix(const TTriangleMatrix<T>& other): data(other.data)
 {
 	dim = other.dim;
 }
 
 template<class T>
-TTriangleMatrix<T>::TTriangleMatrix(size_t dim_, const T& other): data(dim_*(dim_ + 1) / 2)
+TTriangleMatrix<T>::TTriangleMatrix(size_t dim_, const T& other): data(dim_*(dim_ + 1) / 2, other)
 {
 	dim = dim_;
 }
 
 template<class T>
-TTriangleMatrix<T>::TTriangleMatrix(TTriangleMatrix&& other)
+TTriangleMatrix<T>::TTriangleMatrix(TTriangleMatrix<T>&& other)
 {
 	data = std::move(other.data);
 	dim = other.dim;

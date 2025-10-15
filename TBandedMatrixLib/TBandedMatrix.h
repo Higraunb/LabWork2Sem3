@@ -1,22 +1,32 @@
-#include "TVector.h"
+#pragma once
+#include <initializer_list>
+#include <stdexcept>
+#include <iostream>
+using namespace std;
+
+template <class T> class TDenseMatrix;
+template <class T> class TVector;
+template <class T> class TVectorProcs;
+
 template <class T>
-class TBendedMatirx
+class TBandedMatrix
 {
 public:
-	TBendedMatirx();
-	TBendedMatirx(const size_t dim_, const size_t width_);
-	TBendedMatirx(const TBendedMatirx& other);
-	TBendedMatirx(const size_t dim_, const size_t width_, const T& other);
-	TBendedx(TBendedMatirx&& other);
-	TBendedMatirx(std::initializer_list<initializer_list<T>> init_list);
-
-	size_t GetRow();
-	size_t GetWidth();
+	TBandedMatrix();
+	TBandedMatrix(TDenseMatrix<T>& other);
+	TBandedMatrix(const TBandedMatrix<T>& other);
+	TBandedMatrix(TBandedMatrix<T>&& other);
+	TBandedMatrix(initializer_list<initializer_list<T>> init_list);
+	void set(size_t row, size_t col, const T& value);
+	T get(size_t row, size_t col) const;
+	void removeElement(size_t pos, size_t row);
+	void insertElement(size_t pos, size_t row, size_t col, const T& value);
+	size_t GetDim();
+	TVector<size_t> GetRowElemCount();
+	TVector<size_t> GetColumnIndex();
 	TVector<T> GetData();
 
-
 	void SetDim(const size_t dim_);
-	void SetWidth(const size_t width_);
 
 	TVector<T> begin() noexcept;
 	const TVector<T> cbegin() const noexcept;
@@ -28,26 +38,25 @@ public:
 	bool full() const noexcept;
 	void Clear() noexcept;
 
-	Row<T> operator[](size_t row_index);
+	TVectorProcs<T> operator[](size_t row_index);
 
-	TBendedMatirx<T>& operator = (const TBendedMatirx<T>& other);
-	TBendedMatirx<T>& operator = (TBendedMatirx<T>&& other) noexcept;
-	TBendedMatirx<T> operator + (const TBendedMatirx<T>& other);
-	TBendedMatirx<T> operator - (const TBendedMatirx<T>& other);
-	TBendedMatirx<T> operator * (TBendedMatirx<T>& other);
+	TBandedMatrix<T>& operator = (const TBandedMatrix<T>& other);
+	TBandedMatrix<T>& operator = (TBandedMatrix<T>&& other) noexcept;
+	TBandedMatrix<T> operator + (const TBandedMatrix<T>& other);
+	TBandedMatrix<T> operator - (const TBandedMatrix<T>& other);
+	TBandedMatrix<T> operator * (const TBandedMatrix<T>& other);
 
-	bool operator==(const TBendedMatirx<T>& other);
-	bool operator!=(const TBendedMatirx<T>& other);
+	bool operator==(const TBandedMatrix<T>& other);
+	bool operator!=(const TBandedMatrix<T>& other);
 
 	template<class O>
-	friend ostream& operator << (ostream& out, TBendedMatirx<O>& other);
+	friend ostream& operator << (ostream& out, TBandedMatrix<O>& other);
 	template<class O>
-	friend istream& operator >> (istream& input, TBendedMatirx<O>& other);
+	friend istream& operator >> (istream& input, TBandedMatrix<O>& other);
 private:
-	struct data
-	{
-		size_t row;
-		size_t column;
-		T elem;
-	};
+	TVector<size_t> row_elem_count;
+	TVector<size_t> column_index;
+	TVector<T> data;
+	size_t dim;
 };
+#include "TBandedMatrix.hpp"

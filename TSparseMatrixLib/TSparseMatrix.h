@@ -1,6 +1,5 @@
+#pragma once
 #include "TVector.h"
-#include <initializer_list>
-using namespace std;
 template <class T>
 class TSparseMatrix
 {
@@ -8,9 +7,9 @@ public:
 
 	TSparseMatrix();
 	TSparseMatrix(const size_t dim_, const size_t width_);
-	TSparseMatrix(const TSparseMatrix& other);
+	TSparseMatrix(const TSparseMatrix<T>& other);
 	TSparseMatrix(const size_t dim_, const size_t width_, const T& other);
-	TSparseMatrix(TSparseMatrix&& other);
+	TSparseMatrix(TSparseMatrix<T>&& other);
 	TSparseMatrix(std::initializer_list<initializer_list<T>> init_list);
 
 	size_t GetDim();
@@ -72,7 +71,7 @@ inline TSparseMatrix<T>::TSparseMatrix(const size_t dim_, const size_t width_)
 }
 
 template<class T>
-inline TSparseMatrix<T>::TSparseMatrix(const TSparseMatrix& other): data(other.data)
+inline TSparseMatrix<T>::TSparseMatrix(const TSparseMatrix<T>& other): data(other.data)
 {
 	dim = other.dim;
 	width = other.width;
@@ -90,7 +89,7 @@ inline TSparseMatrix<T>::TSparseMatrix(const size_t dim_, const size_t width_, c
 }
 
 template<class T>
-inline TSparseMatrix<T>::TSparseMatrix(TSparseMatrix&& other): data(other.data)
+inline TSparseMatrix<T>::TSparseMatrix(TSparseMatrix<T>&& other): data(other.data)
 {
 	dim = other.dim;
 	width = other.width;
