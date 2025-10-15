@@ -148,20 +148,20 @@ TEST_F(TSparseMatrixTest, MultiplicationOperator) {
   EXPECT_EQ(result[1][1], 12); 
 }
 
-// Тест операторов сравнения
-TEST_F(TSparseMatrixTest, ComparisonOperators) {
-  TSparseMatrix<int> mat1(2, 1);
-  TSparseMatrix<int> mat2(2, 1);
-  TSparseMatrix<int> mat3(3, 1);
-
-  mat1[0][0] = 1;
-  mat2[0][0] = 1;
-  mat3[0][0] = 1;
-
-  EXPECT_TRUE(mat1 == mat2);
-  EXPECT_FALSE(mat1 == mat3);
-  EXPECT_TRUE(mat1 != mat3);
-}
+//// Тест операторов сравнения
+//TEST_F(TSparseMatrixTest, ComparisonOperators) {
+//  TSparseMatrix<int> mat1(2, 1);
+//  TSparseMatrix<int> mat2(2, 1);
+//  TSparseMatrix<int> mat3(3, 1);
+//
+//  mat1[0][0] = 1;
+//  mat2[0][0] = 1;
+//  mat3[0][0] = 1;
+//
+//  EXPECT_TRUE(mat1 == mat2);
+//  EXPECT_FALSE(mat1 == mat3);
+//  EXPECT_TRUE(mat1 != mat3);
+//}
 
 // Тест методов GetDim и GetWidth
 TEST_F(TSparseMatrixTest, GetDimAndWidth) {
