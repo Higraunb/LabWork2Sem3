@@ -12,6 +12,8 @@ public:
 	TSparseMatrix(const size_t dim_, const size_t width_, const T& other);
 	TSparseMatrix(TSparseMatrix<T>&& other);
 	TSparseMatrix(std::initializer_list<initializer_list<T>> init_list);
+	TSparseMatrix<T>(const string& filename);
+	void SaveToFile(const string& filename);
 
 	size_t GetDim();
 	size_t GetWidth();
@@ -142,7 +144,34 @@ inline TSparseMatrix<T>::TSparseMatrix(std::initializer_list<initializer_list<T>
 		row_idx++;
 	}
 }
+template<class T>
+inline TSparseMatrix<T>::TSparseMatrix(const string& filename)
+{
+	std::ifstream file(filename, std::ios::binary);
+	if (!file.is_open())
+		throw std::runtime_error("Cannot open file for reading: " + filename);
 
+	// Читаем размерности
+	file.read(reinterpret_cast<char*>(&dim), sizeof(size_t));
+	file.read(reinterpret_cast<char*>(&width), sizeof(size_t));
+
+	// Читаем размер данных
+	size_t data_size;
+	file.read(reinterpret_cast<char*>(&data_size), sizeof(size_t));
+
+	// Инициализируем вектор данных
+	data = TVector<T>(data_size);
+
+	// Читаем данные
+	for (size_t i = 0; i < data_size; ++i)
+	{
+		T value;
+		file.read(reinterpret_cast<char*>(&value), sizeof(T));
+		data.push_back(value);
+	}
+
+	file.close();
+}
 template<class T>
 inline size_t TSparseMatrix<T>::GetDim()
 {
@@ -355,6 +384,30 @@ TSparseMatrix<T> TSparseMatrix<T>::operator*(TSparseMatrix<T>& other)
 	}
 
 	return result;
+}
+
+template<class T>
+inline void TSparseMatrix<T>::SaveToFile(const string& filename)
+{
+	std::ofstream file(filename, std::ios::binary);
+	if (!file.is_open())
+		throw std::runtime_error("Cannot open file for writing: " + filename);
+
+	// Сохраняем размерности
+	file.write(reinterpret_cast<const char*>(&dim), sizeof(size_t));
+	file.write(reinterpret_cast<const char*>(&width), sizeof(size_t));
+
+	// Сохраняем размер данных
+	size_t data_size = data.GetSize();
+	file.write(reinterpret_cast<const char*>(&data_size), sizeof(size_t));
+
+	// Сохраняем данные
+	for (size_t i = 0; i < data_size; ++i)
+	{
+		file.write(reinterpret_cast<const char*>(&data[i]), sizeof(T));
+	}
+
+	file.close();
 }
 
 

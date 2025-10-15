@@ -20,6 +20,7 @@ public:
 	TDenseMatrix(size_t column_, size_t row_, const T& other);
 	TDenseMatrix(TDenseMatrix<T>&& other);
 	TDenseMatrix(std::initializer_list<initializer_list<T>> init_list);
+	TDenseMatrix(const string& filename);
 
 	size_t GetRow();
 	size_t GetColumn();
@@ -55,6 +56,8 @@ public:
 
 	bool operator==(const TDenseMatrix<T>& other);
 	bool operator!=(const TDenseMatrix<T>& other);
+
+	void SaveToFile(const string& filename);
 
 	template<class O>
 	friend ostream& operator << (ostream& out, TDenseMatrix<O>& other);

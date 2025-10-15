@@ -12,6 +12,7 @@ public:
 	TTriangleMatrix(size_t dim_, const T& other);
 	TTriangleMatrix(TTriangleMatrix<T>&& other);
 	TTriangleMatrix(std::initializer_list<initializer_list<T>> init_list);
+	TTriangleMatrix(const string& filename);
 
 	size_t GetDim();
 	TVector<T> GetData();
@@ -40,6 +41,7 @@ public:
 
 	bool operator==(const TTriangleMatrix<T>& other);
 	bool operator!=(const TTriangleMatrix<T>& other);
+	void SaveToFile(const string& filename);
 
 	template<class O>
 	friend ostream& operator << (ostream& out, TTriangleMatrix<O>& other);
@@ -84,6 +86,34 @@ TTriangleMatrix<T>::TTriangleMatrix(TTriangleMatrix<T>&& other)
 }
 
 template<class T>
+inline TTriangleMatrix<T>::TTriangleMatrix(const string& filename)
+{
+	std::ifstream file_matrix(filename.CStr());
+
+	if (!file_matrix.is_open())
+		throw ("Cannot open file ");
+
+	size_t file_dim;
+	file_matrix >> file_dim;
+
+	if (file_dim == 0) 
+		throw ("Invalid matrix dimensions in file");
+
+	dim = file_dim;
+	data.SetSize(dim * (dim + 1) / 2);
+
+	for (size_t i = 0; i < dim; ++i)
+	{
+		for (size_t j = 0; j <= i; ++j)
+		{
+			if (!(file_matrix >> data[i * (i + 1) / 2 + j]))
+				throw ("Error reading matrix data from file");
+		}
+	}
+	file_matrix.close();
+}
+
+template<class T>
 TTriangleMatrix<T>::TTriangleMatrix(std::initializer_list<initializer_list<T>> init_list)
 {
 	dim = init_list.size();
@@ -123,6 +153,23 @@ template<class T>
 inline TVector<T> TTriangleMatrix<T>::GetData()
 {
 	return data;
+}
+
+template<class T>
+inline void TTriangleMatrix<T>::SaveToFile(const string& filename)
+{
+	ofstream file(filename.CStr());
+	if (file.is_open())
+	{
+		file << dim << '\n';
+
+		for (auto i = 0; i < dim; ++i)
+		{
+			for (auto j = 0; j <= i; ++j) file << this->data[(i * (i + 1) / 2) + j] << ' ';
+			file << '\n';
+		}
+	}
+	file.close();
 }
 
 template<class T>

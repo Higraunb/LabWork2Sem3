@@ -18,6 +18,10 @@ public:
 	TBandedMatrix(const TBandedMatrix<T>& other);
 	TBandedMatrix(TBandedMatrix<T>&& other);
 	TBandedMatrix(initializer_list<initializer_list<T>> init_list);
+
+	TBandedMatrix<T>(const string& filename);
+	void SaveToFile(const string& filename);
+
 	void set(size_t row, size_t col, const T& value);
 	T get(size_t row, size_t col) const;
 	void removeElement(size_t pos, size_t row);

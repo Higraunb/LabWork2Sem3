@@ -3,6 +3,7 @@
 #include "TDenseMatrix.h"
 #include "TBandedMatrix.h"
 #include <map>
+#include <string>
 
 template<class T>
 inline TBandedMatrix<T>::TBandedMatrix()
@@ -37,6 +38,58 @@ inline TBandedMatrix<T>::TBandedMatrix(TDenseMatrix<T>& other)
 	}
 	else
 		throw invalid_argument("Error size other matrix = 0");
+}
+
+template<class T>
+inline TBandedMatrix<T>::TBandedMatrix(const string& filename)
+{
+  std::ifstream file(filename, std::ios::binary);
+  if (!file.is_open())
+    throw std::runtime_error("Cannot open file for reading: " + filename);
+
+  // Читаем размерность
+  file.read(reinterpret_cast<char*>(&dim), sizeof(size_t));
+
+  // Читаем размер массива данных
+  size_t data_size;
+  file.read(reinterpret_cast<char*>(&data_size), sizeof(size_t));
+
+  // Инициализируем и читаем данные
+  data = TVector<T>(data_size);
+  for (size_t i = 0; i < data_size; ++i)
+  {
+    T value;
+    file.read(reinterpret_cast<char*>(&value), sizeof(T));
+    data.push_back(value);
+  }
+
+  // Читаем размер row_elem_count
+  size_t row_count_size;
+  file.read(reinterpret_cast<char*>(&row_count_size), sizeof(size_t));
+
+  // Инициализируем и читаем row_elem_count
+  row_elem_count = TVector<size_t>(row_count_size);
+  for (size_t i = 0; i < row_count_size; ++i)
+  {
+    size_t value;
+    file.read(reinterpret_cast<char*>(&value), sizeof(size_t));
+    row_elem_count.push_back(value);
+  }
+
+  // Читаем размер column_index
+  size_t col_index_size;
+  file.read(reinterpret_cast<char*>(&col_index_size), sizeof(size_t));
+
+  // Инициализируем и читаем column_index
+  column_index = TVector<size_t>(col_index_size);
+  for (size_t i = 0; i < col_index_size; ++i)
+  {
+    size_t value;
+    file.read(reinterpret_cast<char*>(&value), sizeof(size_t));
+    column_index.push_back(value);
+  }
+
+  file.close();
 }
 
 template<class T>
@@ -383,6 +436,49 @@ inline TBandedMatrix<T> TBandedMatrix<T>::operator-(const TBandedMatrix<T>& othe
 
   return result;
 }
+template<class T>
+inline void TBandedMatrix<T>::SaveToFile(const string& filename)
+{
+  std::ofstream file(filename, std::ios::binary);
+  if (!file.is_open())
+    throw std::runtime_error("Cannot open file for writing: " + filename);
+
+  // Сохраняем размерность
+  file.write(reinterpret_cast<const char*>(&dim), sizeof(size_t));
+
+  // Сохраняем размер массива данных
+  size_t data_size = data.GetSize();
+  file.write(reinterpret_cast<const char*>(&data_size), sizeof(size_t));
+
+  // Сохраняем данные
+  for (size_t i = 0; i < data_size; ++i)
+  {
+    file.write(reinterpret_cast<const char*>(&data[i]), sizeof(T));
+  }
+
+  // Сохраняем размер row_elem_count
+  size_t row_count_size = row_elem_count.GetSize();
+  file.write(reinterpret_cast<const char*>(&row_count_size), sizeof(size_t));
+
+  // Сохраняем row_elem_count
+  for (size_t i = 0; i < row_count_size; ++i)
+  {
+    file.write(reinterpret_cast<const char*>(&row_elem_count[i]), sizeof(size_t));
+  }
+
+  // Сохраняем размер column_index
+  size_t col_index_size = column_index.GetSize();
+  file.write(reinterpret_cast<const char*>(&col_index_size), sizeof(size_t));
+
+  // Сохраняем column_index
+  for (size_t i = 0; i < col_index_size; ++i)
+  {
+    file.write(reinterpret_cast<const char*>(&column_index[i]), sizeof(size_t));
+  }
+
+  file.close();
+}
+
 
 template<class T>
 inline TBandedMatrix<T> TBandedMatrix<T>::operator*(const TBandedMatrix<T>& other)

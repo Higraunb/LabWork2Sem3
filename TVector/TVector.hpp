@@ -1,6 +1,7 @@
 #pragma once
 #include "TBandedMatrix.h"
 #include "TVector.h"
+#include <string>
 
 template<class O>
 std::ostream& operator<<(std::ostream& out, TVector<O>& other) {
