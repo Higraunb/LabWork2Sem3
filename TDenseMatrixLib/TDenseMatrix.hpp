@@ -76,7 +76,7 @@ inline TDenseMatrix<T>::TDenseMatrix(initializer_list<initializer_list<T>> init_
 template<class T>
 inline TDenseMatrix<T>::TDenseMatrix(const string& filename)
 {
-	std::ifstream file(filename.CStr());
+	std::ifstream file(filename.c_str());
 
 	if (!file.is_open()) 
 		throw ("Cannot open file ");
@@ -89,12 +89,12 @@ inline TDenseMatrix<T>::TDenseMatrix(const string& filename)
 		if (file_rows == 0 || file_columns == 0) {
 			throw ("Invalid matrix dimensions in file");
 		}
-		rows = file_rows;
-		columns = file_columns;
-		data.SetSize(rows * columns);
-		for (size_t i = 0; i < rows; ++i) {
-			for (size_t j = 0; j < columns; ++j)
-				file >> data[i * columns + j];
+		row = file_rows;
+		column = file_columns;
+		data.SetSize(row * column);
+		for (size_t i = 0; i < row; ++i) {
+			for (size_t j = 0; j < column; ++j)
+				file >> data[i * column + j];
 		}
 		file.close();
 	}
@@ -104,15 +104,15 @@ inline TDenseMatrix<T>::TDenseMatrix(const string& filename)
 template<class T>
 inline void TDenseMatrix<T>::SaveToFile(const string& filename)
 {
-	ofstream file(filename.CStr());
+	ofstream file(filename.c_str());
 	if (file.is_open())
 	{
 		file
-			<< rows << '\n'
-			<< columns << '\n';
-		for (auto i = 0; i < rows; ++i)
+			<< row << '\n'
+			<< column << '\n';
+		for (auto i = 0; i < row; ++i)
 		{
-			for (auto j = 0; j < columns; ++j) file << data[i * columns + j] << ' ';
+			for (auto j = 0; j < column; ++j) file << data[i * column + j] << ' ';
 			file << '\n';
 		}
 	}

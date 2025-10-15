@@ -88,7 +88,7 @@ TTriangleMatrix<T>::TTriangleMatrix(TTriangleMatrix<T>&& other)
 template<class T>
 inline TTriangleMatrix<T>::TTriangleMatrix(const string& filename)
 {
-	std::ifstream file_matrix(filename.CStr());
+	std::ifstream file_matrix(filename.c_str());
 
 	if (!file_matrix.is_open())
 		throw ("Cannot open file ");
@@ -158,7 +158,7 @@ inline TVector<T> TTriangleMatrix<T>::GetData()
 template<class T>
 inline void TTriangleMatrix<T>::SaveToFile(const string& filename)
 {
-	ofstream file(filename.CStr());
+	ofstream file(filename.c_str());
 	if (file.is_open())
 	{
 		file << dim << '\n';
